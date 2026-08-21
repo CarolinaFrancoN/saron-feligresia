@@ -303,7 +303,7 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
       <div style="text-align:center;color:rgba(255,255,255,.45);font-size:12px;margin:-4px 0 10px">— o —</div>
       <div class="ov-field">
         <label>Número de documento de identidad</label>
-        <input type="text" id="vali-doc" placeholder="Cédula, pasaporte u otro documento" inputmode="numeric">
+        <input type="text" id="vali-doc" placeholder="Cédula, pasaporte u otro documento" inputmode="numeric" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
       </div>
       <button class="btn-ov btn-ov-primary activo" id="btn-vali-confirmar" onclick="validarNacimiento()">✔ Confirmar y entrar</button>
     </div>
@@ -580,9 +580,15 @@ function validarNacimiento(){
   var nacR    = normFecha(m[COL.nacimiento]);
   var fechaOk = fecha && normFecha(fecha) === nacR;
 
-  // Comparar documento (columna documento u otroDoc, solo dígitos)
-  var docR    = (m[COL.documento]||'').replace(/\D/g,'');
-  var docR2   = (m[COL.otroDoc]||'').replace(/\D/g,'');
+  // Comparar documento (columna O u P). Maneja notación científica de Sheets (ej: 1.14135E+09)
+  function normDoc(v){
+    v = (v||'').trim();
+    // Si viene en notación científica, convertir a entero
+    if(/e/i.test(v) && !isNaN(Number(v))) v = String(Math.round(Number(v)));
+    return v.replace(/\D/g,'');
+  }
+  var docR    = normDoc(m[COL.documento]);
+  var docR2   = normDoc(m[COL.otroDoc]);
   var docOk   = doc && (doc === docR || (docR2 && doc === docR2));
 
   if(fechaOk || docOk){
