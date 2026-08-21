@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Iglesia Saron · Feligresía</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1c1c1e;min-height:100vh}
+input,select,textarea,button{font-family:inherit}
+:root{--primary:#005A8C;--primary-dark:#004070;--secondary:#2e7d32;--accent:#f57c00;--danger:#c62828;--warn:#f9a825;--bg:#f0f4f8;--card:#fff;--border:#e0e6ed;--muted:#6b7280;--radius:14px}
+
+/* ── OVERLAY POLÍTICA / LOGIN ── */
+#overlay{position:fixed;inset:0;background:rgba(0,40,85,.97);z-index:9999;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:16px 14px 40px}
+.ov-logo{margin:14px 0 6px;text-align:center}
+.ov-sub{color:rgba(255,255,255,.6);font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:4px}
+.ov-title{color:#fff;font-size:clamp(16px,4vw,22px);font-weight:800;text-align:center;line-height:1.3;margin-bottom:6px}
+.ov-chip{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-size:11px;padding:3px 12px;border-radius:20px;margin-bottom:14px}
+
+/* Caja política */
+.pol-box{background:#fff;border-radius:var(--radius);max-width:700px;width:100%;max-height:46vh;overflow-y:auto;padding:22px;margin-bottom:10px;border:2px solid rgba(255,255,255,.1)}
+.pol-font-ctrl{display:flex;align-items:center;gap:8px;max-width:700px;width:100%;margin-bottom:8px;justify-content:flex-end}
+.pol-font-ctrl span{color:rgba(255,255,255,.6);font-size:11px}
+.pol-font-ctrl button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:14px}
+.pol-font-ctrl button:hover{background:rgba(255,255,255,.28)}
+#pol-texto{font-size:14px;line-height:1.9;color:#2c2c2c}
+#pol-texto h3{font-size:13px;font-weight:700;color:#005FA8;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+#pol-texto h3:first-child{margin-top:0}
+#pol-texto p{margin-bottom:10px}
+#pol-texto ul{padding-left:20px;margin-bottom:10px}
+#pol-texto ul li{margin-bottom:5px}
+#pol-texto .ley{font-style:italic;color:#666;font-size:12px}
+#pol-texto .aviso{background:#fff8e1;border-left:3px solid #f9a825;padding:10px 14px;border-radius:6px;margin:12px 0;font-size:13px}
+
+/* Paso de política */
+.ov-form{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:var(--radius);padding:18px 20px;max-width:700px;width:100%;margin-bottom:10px}
+.ov-form-title{color:#fff;font-size:14px;font-weight:700;margin-bottom:14px;text-align:center}
+.ov-field{margin-bottom:12px}
+.ov-field label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.ov-field input{width:100%;padding:13px 14px;border:1.5px solid rgba(255,255,255,.22);border-radius:10px;font-size:15px;background:rgba(255,255,255,.1);color:#fff;outline:none;transition:border-color .2s}
+.ov-field input::placeholder{color:rgba(255,255,255,.3)}
+.ov-field input:focus{border-color:#fff}
+.ov-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.ov-check input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:3px;cursor:pointer;accent-color:#005FA8}
+.ov-check label{color:rgba(255,255,255,.8);font-size:13px;line-height:1.7;cursor:pointer}
+
+/* Botones overlay */
+.btn-ov{width:100%;padding:14px;border-radius:10px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.btn-ov-primary{background:linear-gradient(135deg,#005FA8,#0070c4);color:#fff;opacity:.35;pointer-events:none}
+.btn-ov-primary.activo{opacity:1;pointer-events:all;box-shadow:0 4px 18px rgba(0,95,168,.55)}
+.btn-ov-secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn-ov-secondary:hover{background:rgba(255,255,255,.22)}
+
+/* Login resultados */
+.login-result{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:13px 14px;margin-bottom:8px;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:12px}
+.login-result:hover{background:rgba(255,255,255,.22)}
+.login-av{width:44px;height:44px;border-radius:50%;background:#005FA8;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;flex-shrink:0}
+.login-name{color:#fff;font-size:15px;font-weight:600}
+.login-sub{color:rgba(255,255,255,.6);font-size:12px;margin-top:2px}
+#login-resultados{max-width:700px;width:100%}
+#login-msg{color:rgba(255,255,255,.7);font-size:13px;text-align:center;padding:8px 0;max-width:700px;width:100%}
+
+/* Paso no encontrado */
+.nf-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:20px;margin-bottom:12px;max-width:700px;width:100%}
+.nf-title{color:#fff;font-size:15px;font-weight:700;margin-bottom:8px}
+.nf-text{color:rgba(255,255,255,.75);font-size:13px;line-height:1.7;margin-bottom:14px}
+
+/* Validación fecha nacimiento */
+.validar-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:22px;margin-bottom:10px;max-width:700px;width:100%}
+.validar-nombre-sel{color:#fff;font-size:17px;font-weight:700;margin-bottom:4px}
+.validar-hint{color:rgba(255,255,255,.65);font-size:13px;margin-bottom:16px;line-height:1.6}
+#vali-error{background:rgba(255,80,80,.18);border:1px solid rgba(255,80,80,.4);border-radius:8px;color:#ff8a80;font-size:13px;padding:10px 14px;margin-bottom:12px;display:none}
+
+.ov-back{background:none;border:none;color:rgba(255,255,255,.55);font-size:13px;cursor:pointer;padding:6px 0;margin-bottom:6px;display:block;max-width:700px;width:100%;text-align:left}
+.ov-back:hover{color:#fff}
+.ov-footer{color:rgba(255,255,255,.3);font-size:11px;text-align:center;margin-top:10px;max-width:700px;line-height:1.8}
+
+/* ── HEADER ── */
+header{background:linear-gradient(160deg,#003d6b 0%,#005A8C 50%,#006ba3 100%);color:#fff;padding:18px 16px 14px;text-align:center;box-shadow:0 4px 16px rgba(0,95,168,.35)}
+.h-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.65;margin-bottom:2px}
+header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
+.usuario-chip{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 14px;font-size:11px;margin-top:6px;opacity:.9}
+.loading-bar{height:3px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:8px;overflow:hidden;display:none}
+.loading-bar.active{display:block}
+.loading-bar-fill{height:100%;background:#fff;border-radius:2px;animation:loadbar 1.5s ease-in-out infinite}
+@keyframes loadbar{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
+
+/* ── NAV ── */
+.nav{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.nav-inner{max-width:860px;margin:0 auto;display:flex}
+.nav-btn{flex:1;padding:12px 4px;font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;text-align:center;line-height:1.3}
+.nav-btn span{display:block;font-size:17px;margin-bottom:2px}
+.nav-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* ── PANELS ── */
+.panel{display:none;max-width:860px;margin:0 auto;padding:16px 14px 70px}
+.panel.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:14px;overflow:hidden}
+.card-head{padding:14px 18px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:10px}
+.card-head h2{font-size:15px;font-weight:700;color:var(--primary)}
+.card-body{padding:16px 18px}
+
+/* ── FORM ── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:#1c1c1e;outline:none;transition:border-color .2s;background:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary)}
+.field textarea{resize:vertical;min-height:75px}
+.field.modified input,.field.modified select,.field.modified textarea{border-color:var(--accent);background:#fffbf0}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-secondary{background:var(--secondary);color:#fff}
+.btn-secondary:hover{background:#1b5e20}
+.btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary)}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:8px;width:auto}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:13px 22px;border-radius:10px;font-size:13px;font-weight:500;z-index:9998;display:none;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.toast.show{display:block}
+.toast.success{background:#2e7d32}
+.toast.error{background:#c62828}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.modal-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-size:16px;font-weight:700;color:var(--primary)}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+.modal-body{padding:18px}
+
+/* ── MI PERFIL ── */
+.perfil-campo{background:#f8fafc;border-radius:9px;padding:11px 13px}
+.perfil-campo-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
+.perfil-campo-val{font-size:14px;font-weight:600;color:#1c1c1e}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+@media(max-width:420px){.grid-2{grid-template-columns:1fr}}
+
+/* ── DESAPARECIDOS ── */
+.miss-card{background:#fff;border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--danger);padding:14px 16px;margin-bottom:10px}
+.miss-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.miss-meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+.miss-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.miss-field{font-size:12px}
+.miss-field strong{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+
+/* ── MI FAMILIA ── */
+.fam-slot{background:#fff;border-radius:12px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
+.fam-slot-head{background:#f0f6ff;padding:11px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.fam-slot-head .fam-emoji{font-size:20px}
+.fam-slot-head .fam-rol{font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;flex:1}
+.fam-slot-body{padding:13px 14px}
+.fam-nombre-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.fam-nombre-row input{flex:1;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;outline:none;transition:border-color .2s}
+.fam-nombre-row input:focus{border-color:var(--primary)}
+.btn-lupa{background:var(--primary);color:#fff;border:none;border-radius:9px;padding:11px 14px;cursor:pointer;font-size:16px;flex-shrink:0}
+.fam-tipo-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
+.fam-tipo-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fam-tipo-btn{padding:8px 13px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.fam-tipo-btn.active{border-color:var(--primary);background:#e8f0fe;color:var(--primary)}
+.fam-extra input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;outline:none;margin-top:4px}
+.fam-extra input:focus{border-color:var(--primary)}
+.fam-selected{background:#e8f5e9;border:1.5px solid #2e7d32;border-radius:9px;padding:9px 13px;font-size:13px;color:#2e7d32;font-weight:600;display:flex;align-items:center;gap:8px;margin-top:4px}
+.fam-busq-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .2s}
+.fam-busq-item:hover{border-color:var(--primary);background:#e8f0fe}
+.fam-busq-av{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.fam-busq-name{font-size:13px;font-weight:600;color:#1c1c1e}
+.fam-busq-sub{font-size:11px;color:var(--muted)}
+.btn-add-fam{background:#fff;border:2px dashed var(--primary);color:var(--primary);border-radius:10px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;width:100%;text-align:center;margin-bottom:10px;transition:all .2s}
+.btn-add-fam:hover{background:#e8f0fe}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.banner-ok{background:#e8f5e9;border-left:3px solid #2e7d32;border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:13px;color:#2e7d32}
+.banner-warn{background:#fff8e1;border-left:3px solid #f9a825;border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:13px;color:#7b5800}
+.section-title{font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.spinner{width:36px;height:36px;border:4px solid #e0e6ed;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     OVERLAY: POLÍTICA + LOGIN
+═══════════════════════════════════════════ -->
+<div id="overlay">
+
+  <div class="ov-logo">
+    <img src="data:image/png;base64,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" alt="Logo IASD" style="width:200px;max-width:80vw;filter:brightness(0) invert(1);margin-bottom:4px">
+  </div>
+  <!-- PASO 1: POLÍTICA -->
+  <div id="paso-politica">
+  <div class="ov-title" style="margin-top:4px">Política de Tratamiento<br>de Datos Personales</div>
+  <span class="ov-chip">📋 Versión 1.0</span>
+    <div class="pol-font-ctrl">
+      <span>Tamaño del texto:</span>
+      <button onclick="cambiarFuente(-1)">A−</button>
+      <button onclick="cambiarFuente(1)">A+</button>
+    </div>
+    <div class="pol-box">
+      <div id="pol-texto">
+        <h3>1. Responsable del Tratamiento</h3>
+        <p>La <strong>Iglesia Adventista del Séptimo Día (IASD)</strong>, organización religiosa sin ánimo de lucro, actúa como Responsable del Tratamiento de los datos personales suministrados en esta plataforma, a través de su iglesia local <strong>Saron</strong>.</p>
+        <p class="ley">Ley 1581/2012, Art. 3 lit. e) — Responsable del Tratamiento.</p>
+
+        <h3>2. Marco Legal Aplicable</h3>
+        <ul>
+          <li><strong>Ley Estatutaria 1581 de 2012</strong> — Régimen General de Protección de Datos Personales en Colombia.</li>
+          <li><strong>Decreto 1377 de 2013</strong> — Reglamentario de la Ley 1581.</li>
+          <li><strong>Decreto 1074 de 2015</strong> — Decreto Único Reglamentario del Sector Comercio.</li>
+          <li><strong>Art. 15 Constitución Política de Colombia</strong> — Derecho fundamental al Habeas Data.</li>
+          <li><strong>Manual de la Iglesia Adventista del Séptimo Día</strong> — Disposiciones sobre custodia y uso de información de feligresía.</li>
+        </ul>
+
+        <h3>3. Datos Objeto de Tratamiento</h3>
+        <p>Se recopilan y tratan los siguientes datos de los miembros de iglesia: nombre completo y fecha de nacimiento, documento de identidad, dirección de residencia, teléfono y correo electrónico, estado civil, ocupación y educación, información eclesiástica (bautismo, traslados, clasificación ACMS), y grupo familiar hasta el cuarto (4°) grado de consanguinidad.</p>
+        <div class="aviso">⚠️ <strong>Datos sensibles:</strong> La información de creencias religiosas es sensible conforme al Art. 5 de la Ley 1581/2012. Su tratamiento solo es posible con autorización expresa del titular y exclusivamente para los fines eclesiásticos aquí descritos.</div>
+
+        <h3>4. Finalidades del Tratamiento</h3>
+        <p>Los datos se usan <strong>exclusivamente</strong> para:</p>
+        <ul>
+          <li>Actualizar y mantener el registro oficial de feligresía en el sistema ACMS de la IASD.</li>
+          <li>Contacto pastoral: visitas, llamadas, mensajes y correos para cuidado espiritual y oración.</li>
+          <li>Comunicar actividades eclesiásticas, programas de evangelismo y servicios de adoración.</li>
+          <li>Gestionar traslados de feligresía entre iglesias adventistas.</li>
+          <li>Localizar miembros publicados como desaparecidos del registro eclesiástico.</li>
+          <li>Construir grupos familiares para el ministerio de familia y visitación pastoral.</li>
+          <li>Estadísticas internas agregadas y anonimizadas para informes denominacionales.</li>
+        </ul>
+        <p class="ley">Manual de la IASD — Capítulos sobre Secretaría de Iglesia y Registro de Feligresía.</p>
+
+        <h3>5. Prohibiciones Expresas de Uso</h3>
+        <p>Queda estrictamente <strong>prohibido</strong>: compartir o ceder datos a terceros ajenos a la IASD; usar datos con fines comerciales, publicitarios o políticos; difundir información personal en redes sociales o medios públicos; y cualquier uso diferente a los fines eclesiásticos descritos.</p>
+
+        <h3>6. Derechos del Titular</h3>
+        <p>Conforme al Art. 8 de la Ley 1581/2012, usted tiene derecho a <strong>conocer, actualizar, rectificar, suprimir y revocar</strong> el tratamiento de sus datos. Para ejercerlos, diríjase al Pastor o Secretaria de la Iglesia Saron.</p>
+
+        <h3>7. Base Legal y Consentimiento</h3>
+        <p>El tratamiento se realiza bajo: (a) la autorización libre, previa, expresa e informada que usted otorga al aceptar esta política; (b) la relación eclesiástica establecida en el bautismo o profesión de fe; y (c) el interés legítimo de la organización en mantener sus registros conforme al Manual de la IASD.</p>
+
+        <h3>8. Seguridad y Conservación</h3>
+        <p>Los datos se almacenan en infraestructura segura de Google (Google Sheets / Drive). Se conservarán mientras el individuo sea miembro activo y por el período mínimo legal posterior según obligaciones denominacionales.</p>
+
+        <h3>9. Transferencias Internacionales</h3>
+        <p>Solo información agregada y no identificable puede compartirse con instancias superiores de la IASD (División Interamericana, Asociación General) para estadísticas misioneras, sin transferir datos personales identificables sin autorización expresa.</p>
+      </div>
+    </div>
+
+    <div class="ov-form">
+      <div class="ov-form-title">Confirmar aceptación</div>
+      <div class="ov-check">
+        <input type="checkbox" id="pol-acepto" onchange="validarPolitica()">
+        <label for="pol-acepto">He leído y acepto la <strong>Política de Tratamiento de Datos Personales</strong> de la Iglesia Adventista del Séptimo Día. Entiendo que mis datos se usarán exclusivamente con fines eclesiásticos conforme al Manual de la IASD y la Ley 1581 de 2012.</label>
+      </div>
+      <button class="btn-ov btn-ov-primary" id="btn-pol-siguiente" onclick="siguientePasoLogin()">Continuar →</button>
+    </div>
+    <div class="ov-footer">
+      Si no acepta la política de datos no podrá acceder a la plataforma de gestión.<br>
+      SIC Colombia · Ley 1581 de 2012 · Decreto 1377 de 2013
+    </div>
+  </div><!-- fin paso-politica -->
+
+  <!-- PASO 2: BÚSQUEDA POR NOMBRE -->
+  <div id="paso-identificacion" style="display:none;max-width:700px;width:100%">
+    <div class="ov-title" style="margin-top:0;margin-bottom:14px">Actualización de Datos<br>IASD Saron</div>
+    <div class="ov-form" style="margin-top:0">
+      <div class="ov-form-title">🔍 Búscate en el listado de Saron</div>
+      <div class="ov-field">
+        <label>Escribe tu nombre o apellido</label>
+        <input type="text" id="login-busqueda" placeholder="Ej: García, Martínez, Ana…" oninput="buscarParaLogin(this.value)" autocomplete="off">
+      </div>
+    </div>
+    <div id="login-msg"></div>
+    <div id="login-resultados"></div>
+    <div id="bloque-no-encontrado" style="display:none">
+      <div class="nf-card">
+        <div class="nf-title">😕 No apareces en el listado de Saron</div>
+        <div class="nf-text">Puedes solicitar tu traslado de feligresía o enviarle un mensaje a la Secretaria de Saron para que te ayude a localizarte.</div>
+        <button class="btn-ov btn-ov-primary activo" style="margin-bottom:10px" onclick="mostrarTraslado()">📋 Solicitar traslado de feligresía</button>
+        <button class="btn-ov btn-ov-secondary" onclick="mostrarMensajeSecretaria()">📩 Enviar mensaje a la Secretaria</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 3: VALIDAR IDENTIDAD (fecha O documento) -->
+  <div id="paso-validar-nac" style="display:none;max-width:700px;width:100%">
+    <button class="ov-back" onclick="volverBusqueda()">← Buscar de nuevo</button>
+    <div class="validar-card">
+      <div class="validar-nombre-sel" id="vali-nombre">—</div>
+      <div class="validar-hint">Para confirmar que eres tú, completa <strong>al menos uno</strong> de estos datos:</div>
+      <div id="vali-error">⚠️ Los datos ingresados no coinciden con el registro. Verifica e intenta de nuevo, o acércate a la Secretaria de Iglesia.</div>
+      <div id="vali-sec-msg" style="display:none;background:rgba(255,200,50,.15);border:1px solid rgba(255,200,50,.35);border-radius:9px;padding:12px 14px;margin-bottom:12px;color:#ffe082;font-size:13px;line-height:1.6">
+        🔒 Demasiados intentos fallidos. Por favor acércate personalmente a la <strong>Secretaria de Iglesia Saron</strong> para validar tu identidad.
+      </div>
+      <div class="ov-field">
+        <label>Fecha de nacimiento</label>
+        <input type="date" id="vali-fecha" style="color-scheme:dark">
+      </div>
+      <div style="text-align:center;color:rgba(255,255,255,.45);font-size:12px;margin:-4px 0 10px">— o —</div>
+      <div class="ov-field">
+        <label>Número de documento de identidad</label>
+        <input type="text" id="vali-doc" placeholder="Cédula, pasaporte u otro documento" inputmode="numeric">
+      </div>
+      <button class="btn-ov btn-ov-primary activo" id="btn-vali-confirmar" onclick="validarNacimiento()">✔ Confirmar y entrar</button>
+    </div>
+  </div>
+
+  <!-- PASO 4a: TRASLADO -->
+  <div id="paso-traslado" style="display:none;max-width:700px;width:100%">
+    <button class="ov-back" onclick="volverNoEncontrado()">← Volver</button>
+    <div class="ov-form">
+      <div class="ov-form-title">📋 Solicitud de Traslado de Feligresía</div>
+      <div class="ov-field"><label>Nombre completo *</label><input type="text" id="tr-nombre" placeholder="Tu nombre y apellidos"></div>
+      <div class="ov-field"><label>Fecha de nacimiento *</label><input type="date" id="tr-nacimiento"></div>
+      <div class="ov-field"><label>Iglesia donde crees está tu feligresía (opcional)</label><input type="text" id="tr-iglesia" placeholder="Ej: Iglesia Adventista Central de Bogotá"></div>
+      <div class="ov-field"><label>Celular para contactarte *</label><input type="tel" id="tr-celular" placeholder="300 000 0000"></div>
+      <div class="ov-field"><label>Observaciones adicionales</label><input type="text" id="tr-obs" placeholder="Cualquier información que nos ayude"></div>
+      <button class="btn-ov btn-ov-primary activo" onclick="enviarTraslado()">📤 Enviar solicitud</button>
+    </div>
+  </div>
+
+  <!-- PASO 4b: MENSAJE SECRETARIA -->
+  <div id="paso-mensaje-sec" style="display:none;max-width:700px;width:100%">
+    <button class="ov-back" onclick="volverNoEncontrado()">← Volver</button>
+    <div class="ov-form">
+      <div class="ov-form-title">📩 Mensaje a la Secretaria de Saron</div>
+      <p style="color:rgba(255,255,255,.7);font-size:13px;margin-bottom:14px;line-height:1.7">Completa tus datos. Te conectaremos con la Secretaria de Saron directamente por WhatsApp.</p>
+      <div class="ov-field"><label>Nombre completo *</label><input type="text" id="ms-nombre" placeholder="Tu nombre y apellidos"></div>
+      <div class="ov-field"><label>Celular o WhatsApp *</label><input type="tel" id="ms-celular" placeholder="300 000 0000"></div>
+      <div class="ov-field"><label>¿Por qué crees que debes estar en Saron?</label><input type="text" id="ms-motivo" placeholder="Fui bautizado aquí, soy miembro activo, etc."></div>
+      <button class="btn-ov btn-ov-primary activo" onclick="enviarMensajeSecretaria()">📤 Enviar por WhatsApp</button>
+    </div>
+  </div>
+
+</div><!-- fin overlay -->
+
+<!-- ═══════════════════════════════════════════
+     APP PRINCIPAL
+═══════════════════════════════════════════ -->
+<div id="app-main" style="display:none">
+
+<header>
+  <div class="h-sub">Iglesia Adventista del Séptimo Día</div>
+  <h1>Iglesia Saron · Feligresía</h1>
+  <div id="usuario-chip" class="usuario-chip"></div>
+  <div class="loading-bar" id="loading-bar"><div class="loading-bar-fill"></div></div>
+</header>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showTab('t1',this)"><span>👤</span>Mi Perfil</button>
+    <button class="nav-btn" onclick="showTab('t2',this)"><span>🕵️</span>Desaparecidos</button>
+    <button class="nav-btn" onclick="showTab('t3',this)"><span>👨‍👩‍👧</span>Mi Familia</button>
+  </div>
+</nav>
+
+<!-- TAB 1: MI PERFIL -->
+<div id="t1" class="panel active">
+  <div id="seccion-perfil-principal">
+    <div style="text-align:center;padding:30px 20px;color:var(--muted)"><div class="spinner"></div><p>Cargando tu perfil…</p></div>
+  </div>
+</div>
+
+<!-- TAB 2: DESAPARECIDOS -->
+<div id="t2" class="panel">
+  <div class="card">
+    <div class="card-head"><span style="font-size:20px">🕵️</span><h2>Miembros Desaparecidos</h2></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Estos miembros no han podido ser contactados. Si tienes información sobre alguno, puedes reportarla.</p>
+      <div id="lista-desaparecidos"><div class="spinner" style="margin:20px auto"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MI FAMILIA -->
+<div id="t3" class="panel">
+  <div id="seccion-familia">
+    <div style="text-align:center;padding:30px 20px;color:var(--muted)"><div class="spinner"></div><p>Cargando…</p></div>
+  </div>
+</div>
+
+</div><!-- fin app-main -->
+
+<!-- MODAL: REPORTE DESAPARECIDO -->
+<div class="modal-bg" id="modal-reporte">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-reporte-titulo">Reportar información</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-reporte')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="reporte-nombre-miembro" style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:14px"></div>
+      <div class="field"><label>Tu nombre completo *</label><input id="rp-reportante" type="text" placeholder="¿Quién reporta?"></div>
+      <div class="field"><label>Tu celular</label><input id="rp-celular-rep" type="tel" placeholder="300 000 0000"></div>
+      <div class="field"><label>Iglesia donde crees que asiste</label><input id="rp-iglesia" type="text" placeholder="Nombre de la iglesia"></div>
+      <div class="field"><label>Persona de contacto</label><input id="rp-contacto" type="text" placeholder="Nombre de familiar o amigo"></div>
+      <div class="field"><label>Teléfono de esa persona</label><input id="rp-tel-contacto" type="tel" placeholder="300 000 0000"></div>
+      <div class="field"><label>Observaciones / Paradero conocido *</label><textarea id="rp-obs" placeholder="Cuéntanos todo lo que sepas…"></textarea></div>
+      <button class="btn btn-secondary" onclick="enviarReporte()">📤 Enviar información</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BUSCAR FAMILIAR EN SARON -->
+<div class="modal-bg" id="modal-buscar-familiar">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Buscar miembro de Saron</h3>
+      <button class="modal-close" onclick="cerrarModal('modal-buscar-familiar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nombre o apellido</label><input type="text" id="buscar-fam-input" placeholder="Escribe para buscar…" oninput="buscarFamiliarSaron(this.value)" autocomplete="off"></div>
+      <div id="buscar-fam-resultados"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CONFIGURACIÓN
+// ══════════════════════════════════════════════════════════
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzRYMujwP9SJ6Q90O057nmLDyot7MPmAhD0gLxZ8Ts8YTwuW9mOE5mkA7xKMvTqdTFD/exec';
+var SHEET_CSV       = 'https://docs.google.com/spreadsheets/d/1tZUOJ7U-dTwba1K8fBDu9hQ9qUc3o-60pekivQBPY94/gviz/tq?tqx=out:csv&gid=0';
+var SHEET_BASE      = 'https://docs.google.com/spreadsheets/d/1tZUOJ7U-dTwba1K8fBDu9hQ9qUc3o-60pekivQBPY94/gviz/tq?tqx=out:csv&sheet=';
+var SECRETARIA_WA   = '573000000000'; // REEMPLAZAR con el número WhatsApp de la Secretaria (ej: 573101234567)
+
+// ── ESTADO ──
+var MIEMBROS        = [];
+var DESAPARECIDOS   = [];
+var ACTUALIZACIONES = {};
+var FAMILIAS        = {};
+var USUARIO         = null;   // miembro autenticado
+var candidatoLogin  = null;   // miembro seleccionado pendiente de validar fecha
+var famSlotActivo   = null;
+var famHijosCount   = 1;
+var famOtrosCount   = 0;
+var famData         = {};
+var polFontSize     = 14;
+var valiIntentos    = 0;
+
+// ── COLUMNAS ──
+var COL = {
+  clasificacion:0, codigo:1, iglesia:2, tipo:3,
+  nombre:4, apellido:5, nacimiento:6, edad:7, cumple:8,
+  paisNac:9, lugarNac:10, telefono:11, celular:12, correo:13,
+  documento:14, otroDoc:15, genero:16, estadoCivil:17,
+  padre:18, madre:19, fechaMatrimonio:20, ocupacion:21,
+  educacion:22, direccion:23, complemento:24, localidad:25,
+  pais:26, fechaBautismo:27, localBautismo:28, bautizadoPor:29,
+  ultimoMov:30, fechaUltimoMov:31, comoConociO:32, factorDecisivo:33,
+  observaciones:34
+};
+
+// ══════════════════════════════════════════════════════════
+// POLÍTICA
+// ══════════════════════════════════════════════════════════
+function cambiarFuente(delta){
+  polFontSize = Math.max(11, Math.min(22, polFontSize + delta));
+  document.getElementById('pol-texto').style.fontSize = polFontSize + 'px';
+}
+function validarPolitica(){
+  var ok  = document.getElementById('pol-acepto').checked;
+  var btn = document.getElementById('btn-pol-siguiente');
+  btn.classList.toggle('activo', ok);
+}
+function siguientePasoLogin(){
+  if(!document.getElementById('pol-acepto').checked) return;
+  document.getElementById('paso-politica').style.display = 'none';
+  document.getElementById('paso-identificacion').style.display = 'block';
+  if(!MIEMBROS.length) cargarDatos();
+}
+
+// ══════════════════════════════════════════════════════════
+// CARGA DE DATOS
+// ══════════════════════════════════════════════════════════
+function cargarDatos(){
+  fetch(SHEET_CSV)
+    .then(function(r){ return r.text(); })
+    .then(function(csv){
+      var filas = parsearCSV(csv);
+      MIEMBROS = filas.slice(1).filter(function(f){ return f.length > 5 && f[COL.nombre]; });
+      DESAPARECIDOS = MIEMBROS.filter(function(m){
+        return (m[COL.clasificacion]||'').toLowerCase().includes('desapar');
+      });
+      cargarActualizaciones();
+    })
+    .catch(function(){ cargarDatosPrueba(); });
+}
+
+function cargarDatosPrueba(){
+  MIEMBROS = [
+    ['1. Frecuente','1001','Saron','Miembro','Ana','García López','1985-03-15','41','15/3','Colombia','Bogotá','','3101234567','ana@gmail.com','12345678','','Femenino','Casado','','','','Docente','Universitaria','Calle 10 #5-20','Apto 301','Chapinero','Colombia','2005-06-12','Saron','Pastor Ruiz','Bautismo','2024-01-01','','',''],
+    ['5. Publicado como desaparecido','1002','Saron','Miembro','Juan','Pérez Mora','1970-07-22','56','22/7','Colombia','Medellín','','3209876543','','87654321','','Masculino','Soltero','','','','Ingeniero','Universitaria','Cra 5 #10-30','','Kennedy','Colombia','1998-04-20','Saron','Pastor Gil','Amor propio','','','',''],
+    ['1. Frecuente','1003','Saron','Miembro','María','Franco Noreña','1990-11-08','35','8/11','Colombia','Cali','3004441234','3004441234','maria@gmail.com','98765432','','Femenino','Soltero','','','','Médica','Posgrado','Av 30 #45-67','Bloque 2','Usaquén','Colombia','2010-09-15','Saron','Diac. Torres','Amigo','1. Frecuente','2023-08-01','','']
+  ];
+  DESAPARECIDOS = MIEMBROS.filter(function(m){ return (m[COL.clasificacion]||'').toLowerCase().includes('desapar'); });
+  toast('⚠️ Modo prueba — datos ficticios. Abre desde Netlify para datos reales.','error');
+}
+
+function cargarActualizaciones(){
+  fetch(SHEET_BASE + encodeURIComponent('Respuestas - Actualizaciones'))
+    .then(function(r){ return r.text(); })
+    .then(function(csv){
+      parsearCSV(csv).slice(1).forEach(function(f){ if(f[1]) ACTUALIZACIONES[String(f[1])]=f; });
+    }).catch(function(){});
+  fetch(SHEET_BASE + encodeURIComponent('Grupos Familiares'))
+    .then(function(r){ return r.text(); })
+    .then(function(csv){
+      parsearCSV(csv).slice(1).forEach(function(f){ if(f[1]) FAMILIAS[String(f[1])]=f; });
+    }).catch(function(){});
+}
+
+// ══════════════════════════════════════════════════════════
+// FLUJO LOGIN: BUSCAR POR NOMBRE
+// ══════════════════════════════════════════════════════════
+function buscarParaLogin(q){
+  var resDiv = document.getElementById('login-resultados');
+  var msgDiv = document.getElementById('login-msg');
+  var nfDiv  = document.getElementById('bloque-no-encontrado');
+  nfDiv.style.display = 'none';
+  if(!q||q.trim().length<2){ resDiv.innerHTML=''; msgDiv.innerHTML=''; return; }
+  if(!MIEMBROS.length){
+    msgDiv.innerHTML='<p style="color:rgba(255,255,255,.6);padding:10px 0;font-size:13px">⏳ Cargando el listado de miembros… intenta de nuevo en unos segundos.</p>';
+    setTimeout(function(){ if(q===document.getElementById('login-busqueda').value) buscarParaLogin(q); }, 2000);
+    return;
+  }
+  var qn = norm(q);
+  var res = MIEMBROS.filter(function(m){
+    return norm(m[COL.nombre]).includes(qn) || norm(m[COL.apellido]).includes(qn);
+  }).slice(0,8);
+  if(!res.length){
+    resDiv.innerHTML='';
+    msgDiv.innerHTML='<p style="color:rgba(255,255,255,.65);padding:8px 0;font-size:13px">No se encontró "'+esc(q)+'" en el listado de Saron.</p>';
+    nfDiv.style.display='block';
+    return;
+  }
+  msgDiv.innerHTML='<p style="color:rgba(255,255,255,.5);font-size:12px;margin-bottom:8px">'+res.length+' resultado(s) — toca tu nombre para continuar:</p>';
+  resDiv.innerHTML = res.map(function(m){
+    return '<div class="login-result" onclick="pedirValidacion(\''+esc(m[COL.codigo])+'\')">'
+      +'<div class="login-av">'+ini(m[COL.nombre],m[COL.apellido])+'</div>'
+      +'<div style="flex:1"><div class="login-name">'+m[COL.nombre]+' '+m[COL.apellido]+'</div>'
+      +'<div class="login-sub">Doc: '+(m[COL.documento]||'N/R')+' · '+m[COL.iglesia]+'</div></div>'
+      +'<span style="color:rgba(255,255,255,.35);font-size:22px">›</span>'
+      +'</div>';
+  }).join('');
+}
+
+// ── PASO 3: PEDIR FECHA DE NACIMIENTO ──
+function pedirValidacion(codigo){
+  var m = MIEMBROS.find(function(x){ return String(x[COL.codigo])===String(codigo); });
+  if(!m) return;
+  candidatoLogin = m;
+  valiIntentos   = 0;
+  document.getElementById('vali-nombre').textContent = m[COL.nombre]+' '+m[COL.apellido];
+  document.getElementById('vali-fecha').value = '';
+  document.getElementById('vali-doc').value   = '';
+  document.getElementById('vali-error').style.display    = 'none';
+  document.getElementById('vali-sec-msg').style.display  = 'none';
+  document.getElementById('btn-vali-confirmar').style.display = 'block';
+  document.getElementById('paso-identificacion').style.display = 'none';
+  document.getElementById('paso-validar-nac').style.display    = 'block';
+  setTimeout(function(){ document.getElementById('vali-fecha').focus(); }, 200);
+}
+
+function validarNacimiento(){
+  if(!candidatoLogin) return;
+  var m     = candidatoLogin;
+  var fecha = document.getElementById('vali-fecha').value.trim();
+  var doc   = document.getElementById('vali-doc').value.trim().replace(/\D/g,'');
+
+  if(!fecha && !doc){ toast('Ingresa tu fecha de nacimiento o número de documento','error'); return; }
+
+  // Comparar fecha de nacimiento
+  var nacR    = normFecha(m[COL.nacimiento]);
+  var fechaOk = fecha && normFecha(fecha) === nacR;
+
+  // Comparar documento (columna documento u otroDoc, solo dígitos)
+  var docR    = (m[COL.documento]||'').replace(/\D/g,'');
+  var docR2   = (m[COL.otroDoc]||'').replace(/\D/g,'');
+  var docOk   = doc && (doc === docR || (docR2 && doc === docR2));
+
+  if(fechaOk || docOk){
+    // ✅ ACCESO CONCEDIDO
+    USUARIO = m;
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('app-main').style.display = 'block';
+    document.getElementById('usuario-chip').textContent = '👤 '+m[COL.nombre]+' '+m[COL.apellido];
+    renderMiPerfil();
+    renderDesaparecidos();
+    renderMiFamilia();
+  } else {
+    // ❌ No coincide
+    valiIntentos++;
+    document.getElementById('vali-error').style.display = 'block';
+    document.getElementById('vali-fecha').value = '';
+    document.getElementById('vali-doc').value   = '';
+    if(valiIntentos >= 3){
+      document.getElementById('vali-error').style.display   = 'none';
+      document.getElementById('vali-sec-msg').style.display  = 'block';
+      document.getElementById('btn-vali-confirmar').style.display = 'none';
+    } else {
+      document.getElementById('vali-fecha').focus();
+    }
+  }
+}
+
+// Normaliza fecha a yyyy-mm-dd para comparar
+function normFecha(f){
+  if(!f) return '';
+  f = f.trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(f)) return f;
+  var p = f.split(/[\/\-\.]/);
+  if(p.length===3){
+    if(p[0].length<=2 && p[2].length===4) return p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
+    if(p[0].length===4) return p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0');
+  }
+  return f;
+}
+
+function volverBusqueda(){
+  candidatoLogin = null;
+  document.getElementById('vali-error').style.display = 'none';
+  document.getElementById('paso-validar-nac').style.display = 'none';
+  document.getElementById('paso-identificacion').style.display = 'block';
+}
+
+function mostrarTraslado(){
+  document.getElementById('bloque-no-encontrado').style.display = 'none';
+  document.getElementById('paso-traslado').style.display = 'block';
+}
+
+function mostrarMensajeSecretaria(){
+  document.getElementById('bloque-no-encontrado').style.display = 'none';
+  document.getElementById('paso-mensaje-sec').style.display = 'block';
+}
+
+function volverNoEncontrado(){
+  document.getElementById('paso-traslado').style.display = 'none';
+  document.getElementById('paso-mensaje-sec').style.display = 'none';
+  document.getElementById('bloque-no-encontrado').style.display = 'block';
+}
+
+function enviarTraslado(){
+  var nombre = document.getElementById('tr-nombre').value.trim();
+  var cel    = document.getElementById('tr-celular').value.trim();
+  if(!nombre||!cel){ toast('Nombre y celular son obligatorios','error'); return; }
+  var datos = {
+    nombre:nombre, apellido:'',
+    nacimiento:document.getElementById('tr-nacimiento').value,
+    iglesiaOrigen:document.getElementById('tr-iglesia').value,
+    celular:cel, correo:'',
+    observaciones:document.getElementById('tr-obs').value
+  };
+  enviarAlScript('solicitarTraslado', datos, function(){
+    toast('✓ Solicitud enviada. La secretaria te contactará pronto.','success');
+    setTimeout(function(){ location.reload(); }, 3200);
+  });
+}
+
+function enviarMensajeSecretaria(){
+  var nombre = document.getElementById('ms-nombre').value.trim();
+  var cel    = document.getElementById('ms-celular').value.trim();
+  if(!nombre||!cel){ toast('Nombre y celular son obligatorios','error'); return; }
+  var motivo = document.getElementById('ms-motivo').value;
+  var msg = 'Hola Secretaria de Saron, soy *'+nombre+'*, cel: *'+cel+'*. '
+    +'Busqué mi nombre en la app de feligresía pero no me encontré. '
+    +(motivo ? 'Motivo: '+motivo+'. ' : '')
+    +'¿Pueden ayudarme?';
+  var datos = {
+    nombre:nombre, apellido:'', nacimiento:'',
+    iglesiaOrigen:'(mensaje WhatsApp)', celular:cel, correo:'',
+    observaciones:motivo
+  };
+  enviarAlScript('solicitarTraslado', datos, function(){});
+  window.open('https://wa.me/'+SECRETARIA_WA+'?text='+encodeURIComponent(msg), '_blank');
+  toast('✓ Abriendo WhatsApp con la secretaria…','success');
+}
+
+// ══════════════════════════════════════════════════════════
+// TAB 1: MI PERFIL
+// ══════════════════════════════════════════════════════════
+function renderMiPerfil(){
+  var m   = USUARIO;
+  if(!m) return;
+  var act = ACTUALIZACIONES[String(m[COL.codigo])];
+  var u   = function(av, orig){ return (act && av) ? av : orig; };
+  var cl  = m[COL.clasificacion]||'';
+  var clr = colorCl(cl);
+  var el  = document.getElementById('seccion-perfil-principal');
+
+  var html = '<div class="card" id="perfil-card">'
+    +'<div class="card-head"><span style="font-size:20px">👤</span><h2>Mi Perfil</h2></div>'
+    +'<div class="card-body">'
+    +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'
+    +'<div style="width:58px;height:58px;border-radius:50%;background:'+clr+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;flex-shrink:0">'+ini(m[COL.nombre],m[COL.apellido])+'</div>'
+    +'<div><div style="font-size:18px;font-weight:700;margin-bottom:5px">'+m[COL.nombre]+' '+m[COL.apellido]+'</div>'
+    +'<span class="pill" style="background:'+clr+'22;color:'+clr+'">'+cl.replace(/^\d+\.\s*/,'')+'</span></div></div>';
+
+  if(act){
+    html += '<div class="banner-ok">✓ <strong>Datos actualizados</strong> el '+act[0]+' — pendiente de revisión por secretaria</div>';
+  }
+
+  var campos = [
+    ['Código ACMS',        m[COL.codigo]],
+    ['Fecha de nacimiento',fmtFecha(m[COL.nacimiento])],
+    ['Edad',               m[COL.edad] ? m[COL.edad]+' años' : ''],
+    ['Género',             m[COL.genero]],
+    ['Estado Civil',       u(act&&act[12], m[COL.estadoCivil])],
+    ['Documento',          u(act&&act[8],  m[COL.documento])],
+    ['Teléfono',           u(act&&act[5],  m[COL.telefono])],
+    ['Celular',            u(act&&act[6],  m[COL.celular])],
+    ['Correo',             u(act&&act[7],  m[COL.correo])],
+    ['Dirección',          u(act&&act[9],  m[COL.direccion])],
+    ['Barrio / Localidad', u(act&&act[11], m[COL.localidad])],
+    ['Ocupación',          u(act&&act[13], m[COL.ocupacion])],
+    ['Educación',          u(act&&act[14], m[COL.educacion])],
+    ['Fecha Bautismo',     fmtFecha(m[COL.fechaBautismo])],
+    ['Bautizado por',      m[COL.bautizadoPor]],
+    ['Último mov.',        (m[COL.ultimoMov]||'')+' '+fmtFecha(m[COL.fechaUltimoMov])],
+  ];
+
+  html += '<div class="grid-2">';
+  campos.forEach(function(c){
+    if(!c[1]||!c[1].trim()) return;
+    html += '<div class="perfil-campo">'
+      +'<div class="perfil-campo-label">'+c[0]+'</div>'
+      +'<div class="perfil-campo-val">'+c[1]+'</div>'
+      +'</div>';
+  });
+  html += '</div><hr class="divider"><p style="font-size:13px;color:var(--muted);margin-bottom:12px">¿Algún dato está desactualizado?</p>';
+  html += '<button class="btn btn-primary" onclick="mostrarFormEdicion()">✏️ Actualizar mis datos</button>';
+  html += '</div></div><div id="form-edicion" style="display:none"></div>';
+  el.innerHTML = html;
+}
+
+function mostrarFormEdicion(){
+  var m   = USUARIO;
+  var act = ACTUALIZACIONES[String(m[COL.codigo])];
+  var u   = function(av, orig){ return (act && av) ? av : orig; };
+  document.getElementById('perfil-card').style.display = 'none';
+  var el = document.getElementById('form-edicion');
+  el.style.display = 'block';
+  var opts = ['Soltero','Casado','Viudo','Divorciado','Unión libre'].map(function(v){
+    return '<option'+(u(act&&act[12],m[COL.estadoCivil])===v?' selected':'')+'>'+v+'</option>';
+  }).join('');
+  el.innerHTML = '<div class="card">'
+    +'<div class="card-head"><span style="font-size:20px">✏️</span><h2>Actualizar mis datos</h2></div>'
+    +'<div class="card-body">'
+    +(act?'<div class="banner-ok">✓ Mostrando tu última actualización del '+act[0]+'</div>':'')
+    +'<p style="font-size:12px;color:var(--accent);margin-bottom:16px">⚡ Los campos que modifiques se resaltarán en naranja antes de enviar.</p>'
+    +'<div class="field"><label>Teléfono fijo</label><input id="ed-telefono" type="tel" value="'+esc(u(act&&act[5],m[COL.telefono]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Celular</label><input id="ed-celular" type="tel" value="'+esc(u(act&&act[6],m[COL.celular]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Correo electrónico</label><input id="ed-correo" type="email" value="'+esc(u(act&&act[7],m[COL.correo]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Dirección</label><input id="ed-direccion" type="text" value="'+esc(u(act&&act[9],m[COL.direccion]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Complemento (apto, bloque, casa…)</label><input id="ed-complemento" type="text" value="'+esc(u(act&&act[10],m[COL.complemento]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Barrio / Localidad</label><input id="ed-localidad" type="text" value="'+esc(u(act&&act[11],m[COL.localidad]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Estado Civil</label><select id="ed-estadoCivil" onchange="marcarCambio(this)">'+opts+'</select></div>'
+    +'<div class="field"><label>Ocupación</label><input id="ed-ocupacion" type="text" value="'+esc(u(act&&act[13],m[COL.ocupacion]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Grado de educación</label><input id="ed-educacion" type="text" value="'+esc(u(act&&act[14],m[COL.educacion]))+'" oninput="marcarCambio(this)"></div>'
+    +'<div class="field"><label>Observaciones para la secretaria</label><textarea id="ed-observaciones" oninput="marcarCambio(this)">'+esc(u(act&&act[16],m[COL.observaciones]))+'</textarea></div>'
+    +'<button class="btn btn-secondary" onclick="enviarActualizacion()">📤 Enviar actualización</button>'
+    +'<button class="btn btn-outline" style="margin-top:8px" onclick="cancelarEdicion()">← Volver a mi perfil</button>'
+    +'</div></div>';
+}
+
+function cancelarEdicion(){
+  document.getElementById('form-edicion').style.display = 'none';
+  document.getElementById('perfil-card').style.display = 'block';
+}
+
+function marcarCambio(el){ el.closest('.field').classList.add('modified'); }
+
+function enviarActualizacion(){
+  var m    = USUARIO;
+  var ids  = ['telefono','celular','correo','direccion','complemento','localidad','estadoCivil','ocupacion','educacion','observaciones'];
+  var chgs = ids.filter(function(id){
+    var el = document.getElementById('ed-'+id);
+    return el && el.closest('.field').classList.contains('modified');
+  });
+  if(!chgs.length){ toast('No hay cambios para enviar.',''); return; }
+  var g = function(id){ var el=document.getElementById('ed-'+id); return el?el.value:''; };
+  var datos = {
+    codigo:m[COL.codigo], nombre:m[COL.nombre], apellido:m[COL.apellido], nacimiento:m[COL.nacimiento],
+    telefono:g('telefono'), celular:g('celular'), correo:g('correo'),
+    direccion:g('direccion'), complemento:g('complemento'), localidad:g('localidad'),
+    estadoCivil:g('estadoCivil'), ocupacion:g('ocupacion'), educacion:g('educacion'),
+    observaciones:g('observaciones'), camposModificados:chgs.join(', ')
+  };
+  enviarAlScript('actualizarMiembro', datos, function(){
+    toast('✓ ¡Actualización enviada! La secretaria revisará los cambios.','success');
+    ACTUALIZACIONES[String(m[COL.codigo])] = [
+      new Date().toLocaleString('es-CO'), m[COL.codigo], m[COL.nombre], m[COL.apellido], m[COL.nacimiento],
+      datos.telefono, datos.celular, datos.correo, m[COL.documento]||'',
+      datos.direccion, datos.complemento, datos.localidad, datos.estadoCivil,
+      datos.ocupacion, datos.educacion, datos.camposModificados, datos.observaciones
+    ];
+    cancelarEdicion();
+    renderMiPerfil();
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// TAB 2: DESAPARECIDOS
+// ══════════════════════════════════════════════════════════
+function renderDesaparecidos(){
+  var el = document.getElementById('lista-desaparecidos');
+  if(!DESAPARECIDOS.length){
+    el.innerHTML='<p style="color:var(--muted);font-size:13px;text-align:center;padding:18px">No hay miembros publicados como desaparecidos.</p>';
+    return;
+  }
+  el.innerHTML = DESAPARECIDOS.map(function(m){
+    return '<div class="miss-card">'
+      +'<div class="miss-name">'+m[COL.nombre]+' '+m[COL.apellido]+'</div>'
+      +'<div class="miss-meta">Doc: '+(m[COL.documento]||'N/R')+' · Nac: '+fmtFecha(m[COL.nacimiento])+'</div>'
+      +'<div class="miss-fields">'
+      +(m[COL.celular]?'<div class="miss-field"><strong>Celular</strong>'+m[COL.celular]+'</div>':'')
+      +(m[COL.localidad]?'<div class="miss-field"><strong>Localidad</strong>'+m[COL.localidad]+'</div>':'')
+      +'</div>'
+      +'<button class="btn btn-sm btn-outline" onclick="abrirReporte(\''+esc(m[COL.codigo])+'\',\''+esc(m[COL.nombre]+' '+m[COL.apellido])+'\')">📍 Tengo información</button>'
+      +'</div>';
+  }).join('');
+}
+
+var reporteActivo = null;
+function abrirReporte(codigo, nombre){
+  reporteActivo = {codigo:codigo, nombre:nombre};
+  document.getElementById('modal-reporte-titulo').textContent = 'Información sobre: '+nombre;
+  document.getElementById('reporte-nombre-miembro').textContent = nombre;
+  document.getElementById('rp-reportante').value = USUARIO ? USUARIO[COL.nombre]+' '+USUARIO[COL.apellido] : '';
+  var act = USUARIO ? ACTUALIZACIONES[String(USUARIO[COL.codigo])] : null;
+  document.getElementById('rp-celular-rep').value = USUARIO ? ((act&&act[6])||USUARIO[COL.celular]||'') : '';
+  document.getElementById('rp-iglesia').value = '';
+  document.getElementById('rp-contacto').value = '';
+  document.getElementById('rp-tel-contacto').value = '';
+  document.getElementById('rp-obs').value = '';
+  document.getElementById('modal-reporte').classList.add('open');
+}
+
+function enviarReporte(){
+  if(!reporteActivo) return;
+  var por = document.getElementById('rp-reportante').value.trim();
+  var obs = document.getElementById('rp-obs').value.trim();
+  if(!por||!obs){ toast('Nombre y observaciones son obligatorios','error'); return; }
+  var datos = {
+    codigoMiembro:reporteActivo.codigo, nombreMiembro:reporteActivo.nombre,
+    reportadoPor:por, celularReportante:document.getElementById('rp-celular-rep').value,
+    iglesiaActual:document.getElementById('rp-iglesia').value,
+    personaContacto:document.getElementById('rp-contacto').value,
+    telefonoContacto:document.getElementById('rp-tel-contacto').value,
+    observaciones:obs
+  };
+  enviarAlScript('reportarDesaparecido', datos, function(){
+    cerrarModal('modal-reporte');
+    toast('✓ ¡Gracias! La información fue enviada.','success');
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// TAB 3: MI FAMILIA
+// ══════════════════════════════════════════════════════════
+function renderMiFamilia(){
+  var m   = USUARIO;
+  if(!m) return;
+  var fam = FAMILIAS[String(m[COL.codigo])] || null;
+  var el  = document.getElementById('seccion-familia');
+  famHijosCount = 1; famOtrosCount = 0; famData = {};
+
+  var aviso = fam
+    ? '<div class="banner-ok">✓ <strong>Grupo familiar registrado</strong> el '+fam[0]+'. Puedes actualizar si hubo cambios.</div>'
+    : '<div class="banner-warn">⚠️ Aún no has registrado tu grupo familiar. Completa los datos a continuación.</div>';
+
+  var html = '<div class="section-title">Mi Grupo Familiar</div>'
+    + aviso
+    + '<p style="font-size:12px;color:var(--muted);margin-bottom:14px">'
+    + 'Si un familiar es miembro de Saron, búscalo con 🔍. Indica si pertenece a otra iglesia IASD o si no es adventista (para visitación o evangelismo).</p>';
+
+  html += slotFamiliar('padre',  '👨','Padre',   (fam&&fam[3])||m[COL.padre]||'');
+  html += slotFamiliar('madre',  '👩','Madre',   (fam&&fam[5])||m[COL.madre]||'');
+  html += slotFamiliar('conyuge','💍','Cónyuge', (fam&&fam[7])||'');
+  for(var h=0;h<famHijosCount;h++) html += slotFamiliar('hijo_'+h,'👶','Hijo/a '+(h+1),'');
+  html += '<button class="btn-add-fam" id="btn-add-hijo" onclick="agregarHijo()">+ Agregar hijo/a</button>';
+  html += '<div id="otros-familiares"></div>';
+  html += '<button class="btn-add-fam" onclick="agregarOtro()">+ Agregar otro familiar (hasta 4° consanguinidad)</button>';
+  html += '<button class="btn btn-secondary" style="margin-top:4px" onclick="guardarFamilia()">📤 Guardar grupo familiar</button>';
+  el.innerHTML = html;
+}
+
+function slotFamiliar(id, emoji, rol, nombre){
+  return '<div class="fam-slot" id="fam-slot-'+id+'">'
+    +'<div class="fam-slot-head"><span class="fam-emoji">'+emoji+'</span><span class="fam-rol">'+rol+'</span></div>'
+    +'<div class="fam-slot-body">'
+    +'<div class="fam-nombre-row">'
+    +'<input id="fam-nom-'+id+'" type="text" placeholder="Nombre completo" value="'+esc(nombre)+'">'
+    +'<button class="btn-lupa" title="Buscar en listado de Saron" onclick="abrirBuscadorFamiliar(\''+id+'\')">🔍</button>'
+    +'</div>'
+    +'<div id="fam-sel-'+id+'"></div>'
+    +'<div class="fam-tipo-label">Pertenencia a la IASD</div>'
+    +'<div class="fam-tipo-btns">'
+    +'<button class="fam-tipo-btn" onclick="setTipoFam(\''+id+'\',\'saron\',this)">⛪ Miembro Saron</button>'
+    +'<button class="fam-tipo-btn" onclick="setTipoFam(\''+id+'\',\'otra-iasd\',this)">🏛 Otra iglesia IASD</button>'
+    +'<button class="fam-tipo-btn" onclick="setTipoFam(\''+id+'\',\'no-iasd\',this)">🙏 No es adventista</button>'
+    +'</div>'
+    +'<div id="fam-extra-'+id+'" class="fam-extra"></div>'
+    +'</div></div>';
+}
+
+function setTipoFam(id, tipo, btn){
+  btn.closest('.fam-tipo-btns').querySelectorAll('.fam-tipo-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  famData['tipo_'+id] = tipo;
+  var ex = document.getElementById('fam-extra-'+id);
+  if(tipo==='saron')     ex.innerHTML='<input type="text" id="fam-cod-'+id+'" placeholder="Código ACMS de Saron (opcional)">';
+  else if(tipo==='otra-iasd') ex.innerHTML='<input type="text" id="fam-iglesia-'+id+'" placeholder="¿A qué iglesia IASD pertenece?">';
+  else if(tipo==='no-iasd')   ex.innerHTML='<input type="tel" id="fam-contacto-'+id+'" placeholder="Número de contacto (para oración / visita / evangelismo)">';
+}
+
+function abrirBuscadorFamiliar(slotId){
+  famSlotActivo = slotId;
+  document.getElementById('buscar-fam-input').value = '';
+  document.getElementById('buscar-fam-resultados').innerHTML = '';
+  document.getElementById('modal-buscar-familiar').classList.add('open');
+  setTimeout(function(){ document.getElementById('buscar-fam-input').focus(); }, 200);
+}
+
+function buscarFamiliarSaron(q){
+  var el = document.getElementById('buscar-fam-resultados');
+  if(!q||q.length<2){ el.innerHTML=''; return; }
+  var qn = norm(q);
+  var res = MIEMBROS.filter(function(m){ return norm(m[COL.nombre]).includes(qn)||norm(m[COL.apellido]).includes(qn); }).slice(0,8);
+  if(!res.length){ el.innerHTML='<p style="color:var(--muted);font-size:13px;padding:10px 0">No encontrado en el listado de Saron.</p>'; return; }
+  el.innerHTML = res.map(function(m){
+    return '<div class="fam-busq-item" onclick="seleccionarFamiliarSaron(\''+esc(m[COL.codigo])+'\')">'
+      +'<div class="fam-busq-av">'+ini(m[COL.nombre],m[COL.apellido])+'</div>'
+      +'<div><div class="fam-busq-name">'+m[COL.nombre]+' '+m[COL.apellido]+'</div>'
+      +'<div class="fam-busq-sub">Doc: '+(m[COL.documento]||'N/R')+' · '+fmtFecha(m[COL.nacimiento])+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+function seleccionarFamiliarSaron(codigo){
+  var m = MIEMBROS.find(function(x){ return String(x[COL.codigo])===String(codigo); });
+  if(!m||!famSlotActivo) return;
+  var id = famSlotActivo;
+  document.getElementById('fam-nom-'+id).value = m[COL.nombre]+' '+m[COL.apellido];
+  document.getElementById('fam-sel-'+id).innerHTML = '<div class="fam-selected">✓ Miembro Saron registrado · Cód. '+m[COL.codigo]+'</div>';
+  famData['cod_'+id]  = m[COL.codigo];
+  famData['tipo_'+id] = 'saron';
+  var btns = document.querySelectorAll('#fam-slot-'+id+' .fam-tipo-btn');
+  btns.forEach(function(b){ b.classList.remove('active'); });
+  if(btns[0]) btns[0].classList.add('active');
+  document.getElementById('fam-extra-'+id).innerHTML = '<input type="text" id="fam-cod-'+id+'" value="'+m[COL.codigo]+'" style="border-color:#2e7d32;background:#f0fff4">';
+  cerrarModal('modal-buscar-familiar');
+}
+
+function agregarHijo(){
+  famHijosCount++;
+  var d = document.createElement('div');
+  d.innerHTML = slotFamiliar('hijo_'+(famHijosCount-1),'👶','Hijo/a '+famHijosCount,'');
+  var ref = document.getElementById('btn-add-hijo');
+  ref.parentNode.insertBefore(d.firstChild, ref);
+}
+
+function agregarOtro(){
+  famOtrosCount++;
+  var par = prompt('¿Qué parentesco tiene? (ej: hermano, tío, primo, sobrino…)') || 'Familiar';
+  var d = document.createElement('div');
+  d.innerHTML = slotFamiliar('otro_'+famOtrosCount,'🧑',par,'');
+  document.getElementById('otros-familiares').appendChild(d.firstChild);
+}
+
+function guardarFamilia(){
+  var m = USUARIO; if(!m) return;
+  var rc = function(id){
+    var el = document.getElementById('fam-nom-'+id);
+    if(!el||!el.value.trim()) return null;
+    var nom  = el.value.trim();
+    var tipo = famData['tipo_'+id]||'';
+    var ex   = '';
+    if(tipo==='saron')     ex=' [Saron:'+((document.getElementById('fam-cod-'+id)||{value:''}).value||famData['cod_'+id]||'')+']';
+    if(tipo==='otra-iasd') ex=' [IASD:'+((document.getElementById('fam-iglesia-'+id)||{value:''}).value||'')+']';
+    if(tipo==='no-iasd')   ex=' [Contacto:'+((document.getElementById('fam-contacto-'+id)||{value:''}).value||'')+']';
+    return nom+ex;
+  };
+  var hijos=[], otros=[];
+  for(var h=0;h<famHijosCount;h++){ var v=rc('hijo_'+h); if(v) hijos.push(v); }
+  for(var o=1;o<=famOtrosCount;o++){ var v2=rc('otro_'+o); if(v2) otros.push(v2); }
+  var datos={
+    codigo:m[COL.codigo], nombreCompleto:m[COL.nombre]+' '+m[COL.apellido],
+    padre:rc('padre')||'', codigoPadre:famData['cod_padre']||'',
+    madre:rc('madre')||'', codigoMadre:famData['cod_madre']||'',
+    conyuge:rc('conyuge')||'', codigoConyuge:famData['cod_conyuge']||'',
+    hijos:hijos.join(' | '), codigosHijos:'',
+    otrosFamiliares:otros.join(' | '), observaciones:''
+  };
+  enviarAlScript('guardarFamilia', datos, function(){
+    toast('✓ Grupo familiar guardado correctamente.','success');
+    FAMILIAS[String(m[COL.codigo])]=[
+      new Date().toLocaleString('es-CO'),m[COL.codigo],m[COL.nombre]+' '+m[COL.apellido],
+      datos.padre,'',datos.madre,'',datos.conyuge,'',datos.hijos,'',datos.otrosFamiliares,''
+    ];
+    renderMiFamilia();
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════════
+function showTab(id, btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+function ini(n,a){ return ((n||'')[0]||'').toUpperCase()+((a||'')[0]||'').toUpperCase(); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/'/g,'&#39;'); }
+function fmtFecha(f){
+  if(!f) return '';
+  var p=f.trim().split(/[-\/]/);
+  if(p.length===3&&p[0].length===4) return p[2]+'/'+p[1]+'/'+p[0];
+  return f;
+}
+function colorCl(cl){
+  if(!cl) return '#6b7280';
+  if(cl.includes('desapar')||cl.includes('5.')) return '#c62828';
+  if(cl.includes('1.')||cl.toLowerCase().includes('frecuente')) return '#005FA8';
+  return '#6b7280';
+}
+function showLoading(v){ document.getElementById('loading-bar').classList.toggle('active',v); }
+function cerrarModal(id){ document.getElementById(id).classList.remove('open'); }
+function toast(msg,tipo){
+  var el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show'+(tipo?' '+tipo:'');
+  setTimeout(function(){ el.className='toast'; },3800);
+}
+function parsearCSV(txt){
+  var filas=[],fila=[],campo='',enQ=false;
+  for(var i=0;i<txt.length;i++){
+    var c=txt[i];
+    if(enQ){ if(c==='"'&&txt[i+1]==='"'){campo+='"';i++;} else if(c==='"'){enQ=false;} else{campo+=c;} }
+    else{
+      if(c==='"'){enQ=true;}
+      else if(c===','){fila.push(campo.trim());campo='';}
+      else if(c==='\n'||c==='\r'){
+        fila.push(campo.trim());campo='';
+        if(fila.some(function(x){return x;})) filas.push(fila);
+        fila=[];
+        if(c==='\r'&&txt[i+1]==='\n') i++;
+      } else{ campo+=c; }
+    }
+  }
+  if(campo||fila.length){ fila.push(campo.trim()); if(fila.some(function(x){return x;})) filas.push(fila); }
+  return filas;
+}
+function enviarAlScript(accion, datos, onExito){
+  if(!APPS_SCRIPT_URL){ toast('Apps Script no configurado','error'); return; }
+  showLoading(true);
+  var url = APPS_SCRIPT_URL+'?accion='+encodeURIComponent(accion)+'&datos='+encodeURIComponent(JSON.stringify(datos));
+  fetch(url,{mode:'no-cors'})
+    .then(function(){ showLoading(false); if(onExito) onExito(); })
+    .catch(function(e){ showLoading(false); toast('Error al enviar: '+e.message,'error'); });
+}
+
+// Carga anticipada de datos
+cargarDatos();
+</script>
+</body>
+</html>
