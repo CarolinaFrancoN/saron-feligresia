@@ -281,7 +281,11 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
         <div class="nf-title">😕 No apareces en el listado de Saron</div>
         <div class="nf-text">Puedes solicitar tu traslado de feligresía o enviarle un mensaje a la Secretaria de Saron para que te ayude a localizarte.</div>
         <button class="btn-ov btn-ov-primary activo" style="margin-bottom:10px" onclick="mostrarTraslado()">📋 Solicitar traslado de feligresía</button>
-        <button class="btn-ov btn-ov-secondary" onclick="mostrarMensajeSecretaria()">📩 Enviar mensaje a la Secretaria</button>
+        <button class="btn-ov btn-ov-secondary" onclick="window.open('https://wa.me/573112626600?text='+encodeURIComponent('Hola, soy miembro de la Iglesia IASD Saron y no aparezco en el listado de miembros activos. Por favor, ¿me pueden ayudar?'),'_blank')">📩 Enviar mensaje a la Secretaria</button>
+        <div style="margin-top:14px;background:rgba(255,255,255,.08);border-left:3px solid #f9a825;border-radius:8px;padding:12px 14px;font-size:12px;color:rgba(255,255,255,.8);line-height:1.7;text-align:left">
+          <strong style="color:#f9a825">ℹ️ ¿No encuentras tu nombre o no puedes validar tu acceso?</strong><br>
+          Contacta a tu <strong>Secretaria de Iglesia</strong> si tu nombre no aparece en la búsqueda de miembros activos, o si al seleccionarlo no logras pasar la validación de número de documento y/o fecha de nacimiento. Ella podrá confirmar cómo están registrados esos datos en el sistema y corregirlos en <strong>ACMS</strong> si es necesario.
+        </div>
       </div>
     </div>
   </div>
@@ -315,9 +319,9 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
     <div class="ov-form">
       <div class="ov-form-title">📋 Solicitud de Traslado de Feligresía</div>
       <div class="ov-field"><label>Nombre completo *</label><input type="text" id="tr-nombre" placeholder="Tu nombre y apellidos"></div>
-      <div class="ov-field"><label>Fecha de nacimiento *</label><input type="date" id="tr-nacimiento"></div>
+      <div class="ov-field"><label>Fecha de nacimiento *</label><input type="date" id="tr-nacimiento" min="1900-01-01" max="2099-12-31"></div>
       <div class="ov-field"><label>Iglesia donde crees está tu feligresía (opcional)</label><input type="text" id="tr-iglesia" placeholder="Ej: Iglesia Adventista Central de Bogotá"></div>
-      <div class="ov-field"><label>Celular para contactarte *</label><input type="tel" id="tr-celular" placeholder="300 000 0000"></div>
+      <div class="ov-field"><label>Celular para contactarte *</label><input type="tel" id="tr-celular" placeholder="300 000 0000" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')"></div>
       <div class="ov-field"><label>Observaciones adicionales</label><input type="text" id="tr-obs" placeholder="Cualquier información que nos ayude"></div>
       <button class="btn-ov btn-ov-primary activo" onclick="enviarTraslado()">📤 Enviar solicitud</button>
     </div>
@@ -428,7 +432,7 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzRYMujwP9SJ6Q90O057nmLDyot7MPmAhD0gLxZ8Ts8YTwuW9mOE5mkA7xKMvTqdTFD/exec';
 var SHEET_CSV       = 'https://docs.google.com/spreadsheets/d/1tZUOJ7U-dTwba1K8fBDu9hQ9qUc3o-60pekivQBPY94/gviz/tq?tqx=out:csv&gid=0';
 var SHEET_BASE      = 'https://docs.google.com/spreadsheets/d/1tZUOJ7U-dTwba1K8fBDu9hQ9qUc3o-60pekivQBPY94/gviz/tq?tqx=out:csv&sheet=';
-var SECRETARIA_WA   = '573000000000'; // REEMPLAZAR con el número WhatsApp de la Secretaria (ej: 573101234567)
+var SECRETARIA_WA   = '573112626600';
 
 // ── ESTADO ──
 var MIEMBROS        = [];
@@ -636,8 +640,34 @@ function volverBusqueda(){
   document.getElementById('paso-identificacion').style.display = 'block';
 }
 
+function irAPasoIdentificacion(){
+  // Ocultar todos los pasos y volver a la búsqueda
+  ['paso-politica','paso-validar-nac','paso-traslado','paso-mensaje-sec','bloque-no-encontrado'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display='none';
+  });
+  // Mostrar paso de identificación y limpiar búsqueda
+  document.getElementById('paso-identificacion').style.display = 'block';
+  var inp = document.getElementById('login-busqueda');
+  if(inp){ inp.value=''; }
+  var res = document.getElementById('login-resultados');
+  if(res){ res.innerHTML=''; }
+  var msg = document.getElementById('login-msg');
+  if(msg){ msg.innerHTML=''; }
+  // Quitar el div de confirmación si existe
+  var ov = document.getElementById('overlay');
+  Array.from(ov.children).forEach(function(el){ el.style.display=''; });
+  document.querySelectorAll('#overlay > div:not([id])').forEach(function(el){ el.remove(); });
+}
+
 function mostrarTraslado(){
   document.getElementById('bloque-no-encontrado').style.display = 'none';
+  // Limpiar formulario antes de mostrarlo
+  ['tr-nombre','tr-iglesia','tr-celular','tr-obs'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  var fn=document.getElementById('tr-nacimiento'); if(fn) fn.value='';
+  var btn=document.querySelector('#paso-traslado .btn-ov-primary');
+  if(btn){ btn.disabled=false; btn.style.opacity='1'; }
   document.getElementById('paso-traslado').style.display = 'block';
 }
 
@@ -652,21 +682,47 @@ function volverNoEncontrado(){
   document.getElementById('bloque-no-encontrado').style.display = 'block';
 }
 
+function mostrarConfirmacionTraslado(){
+  var ov = document.getElementById('overlay');
+  // Ocultar todo excepto el logo
+  Array.from(ov.children).forEach(function(el){
+    if(!el.classList.contains('ov-logo')) el.style.display = 'none';
+  });
+  var div = document.createElement('div');
+  div.style.cssText = 'background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:28px 22px;max-width:700px;width:100%;text-align:center;color:#fff;margin-top:20px';
+  div.innerHTML = '<div style="font-size:2.5rem;margin-bottom:12px">✅</div>'
+    +'<div style="font-size:17px;font-weight:700;margin-bottom:12px">¡Solicitud enviada exitosamente!</div>'
+    +'<div style="font-size:13px;line-height:1.8;color:rgba(255,255,255,.82);margin-bottom:22px">'
+    +'Tus datos han sido enviados a la <strong>Secretaria de la Iglesia IASD Saron</strong>. '
+    +'Serás contactado vía WhatsApp o teléfono en caso de necesitar complementar alguna información '
+    +'para tramitar el traslado de tu feligresía.</div>'
+    +'<button class="btn-ov btn-ov-primary activo" onclick="location.reload()">🏠 Volver a Inicio</button>';
+  ov.appendChild(div);
+}
+
 function enviarTraslado(){
   var nombre = document.getElementById('tr-nombre').value.trim();
   var cel    = document.getElementById('tr-celular').value.trim();
-  if(!nombre||!cel){ toast('Nombre y celular son obligatorios','error'); return; }
+  var fecha  = document.getElementById('tr-nacimiento').value;
+  if(!nombre){ alert('El nombre completo es obligatorio.'); return; }
+  if(!cel){    alert('El celular es obligatorio.'); return; }
+  if(!fecha){  alert('Ingresa tu fecha de nacimiento.'); return; }
+  var anio = parseInt((fecha||'').split('-')[0],10);
+  if(isNaN(anio)||anio<1900||anio>2099){ alert('El año de la fecha no es válido. Debe estar entre 1900 y 2099.'); return; }
   var datos = {
     nombre:nombre, apellido:'',
-    nacimiento:document.getElementById('tr-nacimiento').value,
+    nacimiento:fecha,
     iglesiaOrigen:document.getElementById('tr-iglesia').value,
     celular:cel, correo:'',
     observaciones:document.getElementById('tr-obs').value
   };
-  enviarAlScript('solicitarTraslado', datos, function(){
-    toast('✓ Solicitud enviada. La secretaria te contactará pronto.','success');
-    setTimeout(function(){ location.reload(); }, 3200);
-  });
+  // Mostrar confirmación de inmediato (no-cors no permite leer respuesta)
+  mostrarConfirmacionTraslado();
+  // Enviar en segundo plano
+  try {
+    var url = APPS_SCRIPT_URL+'?accion=solicitarTraslado&datos='+encodeURIComponent(JSON.stringify(datos));
+    fetch(url,{mode:'no-cors'}).catch(function(){});
+  } catch(e){}
 }
 
 function enviarMensajeSecretaria(){
