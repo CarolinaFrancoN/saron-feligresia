@@ -195,7 +195,7 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
   <!-- PASO 1: POLÍTICA -->
   <div id="paso-politica">
   <div class="ov-title" style="margin-top:4px">Política de Tratamiento<br>de Datos Personales</div>
-  <span class="ov-chip">📋 Versión 1.0</span>
+  <span class="ov-chip">📋 Versión 70.1</span>
     <div class="pol-font-ctrl">
       <span>Tamaño del texto:</span>
       <button onclick="cambiarFuente(-1)">A−</button>
@@ -545,7 +545,7 @@ function buscarParaLogin(q){
     return '<div class="login-result" onclick="pedirValidacion(\''+esc(m[COL.codigo])+'\')">'
       +'<div class="login-av">'+ini(m[COL.nombre],m[COL.apellido])+'</div>'
       +'<div style="flex:1"><div class="login-name">'+m[COL.nombre]+' '+m[COL.apellido]+'</div>'
-      +'<div class="login-sub">Doc: '+(m[COL.documento]||'N/R')+' · '+m[COL.iglesia]+'</div></div>'
+      +'<div class="login-sub">'+m[COL.iglesia]+'</div></div>'
       +'<span style="color:rgba(255,255,255,.35);font-size:22px">›</span>'
       +'</div>';
   }).join('');
