@@ -291,7 +291,7 @@ header h1{font-size:clamp(16px,4vw,21px);font-weight:700;line-height:1.3}
     <button class="ov-back" onclick="volverBusqueda()">← Buscar de nuevo</button>
     <div class="validar-card">
       <div class="validar-nombre-sel" id="vali-nombre">—</div>
-      <div class="validar-hint">Para confirmar que eres tú, completa <strong>al menos uno</strong> de estos datos:</div>
+      <div class="validar-hint">Para confirmar que eres tú, completa <strong>los dos datos</strong>:</div>
       <div id="vali-error">⚠️ Los datos ingresados no coinciden con el registro. Verifica e intenta de nuevo, o acércate a la Secretaria de Iglesia.</div>
       <div id="vali-sec-msg" style="display:none;background:rgba(255,200,50,.15);border:1px solid rgba(255,200,50,.35);border-radius:9px;padding:12px 14px;margin-bottom:12px;color:#ffe082;font-size:13px;line-height:1.6">
         🔒 Demasiados intentos fallidos. Por favor acércate personalmente a la <strong>Secretaria de Iglesia Saron</strong> para validar tu identidad.
@@ -574,24 +574,24 @@ function validarNacimiento(){
   var fecha = document.getElementById('vali-fecha').value.trim();
   var doc   = document.getElementById('vali-doc').value.trim().replace(/\D/g,'');
 
-  if(!fecha && !doc){ toast('Ingresa tu fecha de nacimiento o número de documento','error'); return; }
+  if(!fecha || !doc){ toast('Debes ingresar tanto la fecha de nacimiento como el número de documento','error'); return; }
 
   // Comparar fecha de nacimiento
   var nacR    = normFecha(m[COL.nacimiento]);
-  var fechaOk = fecha && normFecha(fecha) === nacR;
+  var fechaOk = normFecha(fecha) === nacR;
 
   // Comparar documento (columna O u P). Maneja notación científica de Sheets (ej: 1.14135E+09)
   function normDoc(v){
     v = (v||'').trim();
-    // Si viene en notación científica, convertir a entero
     if(/e/i.test(v) && !isNaN(Number(v))) v = String(Math.round(Number(v)));
     return v.replace(/\D/g,'');
   }
-  var docR    = normDoc(m[COL.documento]);
-  var docR2   = normDoc(m[COL.otroDoc]);
-  var docOk   = doc && (doc === docR || (docR2 && doc === docR2));
+  var docR   = normDoc(m[COL.documento]);
+  var docR2  = normDoc(m[COL.otroDoc]);
+  var docOk  = (doc === docR || (docR2 && doc === docR2));
 
-  if(fechaOk || docOk){
+  // Ambos deben ser correctos
+  if(fechaOk && docOk){
     // ✅ ACCESO CONCEDIDO
     USUARIO = m;
     document.getElementById('overlay').style.display = 'none';
